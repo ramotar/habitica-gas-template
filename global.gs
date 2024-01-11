@@ -10,13 +10,25 @@ const SCRIPT_NAME = "TypeScriptNameHere";
 // - See https://developers.google.com/apps-script/reference/properties/properties-service
 const scriptProperties = PropertiesService.getScriptProperties();
 
+function doPost(e) {
+  // [Developers] This is the function that will be executed whenever Habitica
+  //   encounters the designated event
+
+  const dataContents = JSON.parse(e.postData.contents);
+  const webhookType = dataContents.type;
+
+  // [Developers] Add script actions here
+
+  return HtmlService.createHtmlOutput();
+}
+
 // [Developers] No need to edit below this point,
 //   but feel free to have a look and tinker with it
 
 const HEADERS = {
-  "x-client" : AUTHOR_ID + "-" + SCRIPT_NAME,
-  "x-api-user" : USER_ID,
-  "x-api-key" : API_TOKEN,
+  "x-client" : (typeof DEVELOPMENT == "undefined" ? AUTHOR_ID + "-" + SCRIPT_NAME : DEVELOPER_ID + "-" + DEVELOPER_SCRIPT_NAME),
+  "x-api-user" : (typeof DEVELOPMENT == "undefined" ? USER_ID : DEVELOPER_ID),
+  "x-api-key" : (typeof DEVELOPMENT == "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN),
 }
 const PARAMS = {
   "headers": HEADERS,
@@ -145,18 +157,6 @@ function api_fetch(url, params, instant = false, max_attempts = 3) {
   throw new Error(
     "Request failed for " + domain + " returned code " + response.getResponseCode() + ". Truncated server response: "+ response.getContentText()
   );
-}
-
-function doPost(e) {
-  // [Developers] This is the function that will be executed whenever Habitica
-  //   encounters the designated event
-
-  const dataContents = JSON.parse(e.postData.contents);
-  const webhookType = dataContents.type;
-
-  // [Developers] Add script actions here
-
-  return HtmlService.createHtmlOutput();
 }
 
 
