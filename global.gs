@@ -10,25 +10,36 @@ const SCRIPT_NAME = "TypeScriptNameHere";
 // - See https://developers.google.com/apps-script/reference/properties/properties-service
 const scriptProperties = PropertiesService.getScriptProperties();
 
-function doPost(e) {
-  // [Developers] This is the function that will be executed whenever Habitica
-  //   encounters the designated event
-
-  const dataContents = JSON.parse(e.postData.contents);
-  const webhookType = dataContents.type;
-
-  // [Developers] Add script actions here
-
-  return HtmlService.createHtmlOutput();
-}
-
 // [Developers] No need to edit below this point,
 //   but feel free to have a look and tinker with it
 
+/* ================================================= */
+/* [Developers] No need to edit below this point,    */
+/*   but feel free to have a look and tinker with it */
+/* ================================================= */
+
+/**
+ * Define regular expression to test user ID and API tokens
+ */
+const TOKEN_REGEXP = new RegExp("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+
+/**
+ * Define internal constants for USER_ID and API_TOKEN as well as AUTHOR_ID and SCRIPT_NAME
+ * 
+ * Those are used for development purposes to prevent leakage of developer secrets.
+ */
+const INT_USER_ID = (typeof DEVELOPMENT === "undefined" ? USER_ID : DEVELOPER_ID);
+const INT_API_TOKEN = (typeof DEVELOPMENT === "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN);
+const INT_AUTHOR_ID = (typeof DEVELOPMENT === "undefined" ? AUTHOR_ID : DEVELOPER_ID);
+const INT_SCRIPT_NAME = (typeof DEVELOPMENT === "undefined" ? SCRIPT_NAME : DEVELOPER_SCRIPT_NAME);
+
+/**
+ * Define the headers for API calls
+ */
 const HEADERS = {
-  "x-client" : (typeof DEVELOPMENT == "undefined" ? AUTHOR_ID + "-" + SCRIPT_NAME : DEVELOPER_ID + "-" + DEVELOPER_SCRIPT_NAME),
-  "x-api-user" : (typeof DEVELOPMENT == "undefined" ? USER_ID : DEVELOPER_ID),
-  "x-api-key" : (typeof DEVELOPMENT == "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN),
+  "x-client" : INT_AUTHOR_ID + "-" + INT_SCRIPT_NAME,
+  "x-api-user" : INT_USER_ID,
+  "x-api-key" : INT_API_TOKEN,
 }
 const PARAMS = {
   "headers": HEADERS,
@@ -71,6 +82,8 @@ class RateLimit {
     else {
       this.retryAfter = null;
     }
+
+    logDebug("RateLimit.update()\n\n", this);
   }
 
   msToReset() {
@@ -91,20 +104,20 @@ let rateLimit = new RateLimit(null);
 
 
 /**
- * api_fetch(url, params, instant [optional], max_attempts [optional])
+ * api_fetch(url, params, instant [optional], maxAttempts [optional])
  * 
  * Wrapper for Google Apps Script's UrlFetchApp.fetch(url, params):
  * https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app#fetchurl,-params
  * 
  * Retries failed API calls, if the addressed server is down and
- * up to a total number of attempts defined by optional parameter max_attempts.
+ * up to a total number of attempts defined by optional parameter maxAttempts.
  * 
- * Also handles Habitica's rate limiting, if their API is called.
+ * Also handles Habitica's rate limiting.
  */
-function api_fetch(url, params, instant = false, max_attempts = 3) {
+function api_fetch(url, params, instant = false, maxAttempts = 3) {
   var response;
 
-  for (let attempt = 0; attempt < max_attempts; attempt++) {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
 
     // if rate limit reached
     if (rateLimit.reached) {
@@ -144,7 +157,7 @@ function api_fetch(url, params, instant = false, max_attempts = 3) {
     }
     // if 5xx server error, try again after 10 seconds
     if (response.getResponseCode() >= 500) {
-      if (attempt < max_attempts - 1) {
+      if (attempt < maxAttempts - 1) {
         Utilities.sleep(10000);
       }
       continue;
@@ -155,8 +168,118 @@ function api_fetch(url, params, instant = false, max_attempts = 3) {
 
   // if request failed finally, throw exception
   throw new Error(
-    "Request failed for " + domain + " returned code " + response.getResponseCode() + ". Truncated server response: "+ response.getContentText()
+    "Request failed for " + domain + " returned code " + response.getResponseCode() + ". Truncated server response: "+ response.getContentText(),
+    { cause: response }
   );
 }
 
+/**
+ * api_sendPM(message, recipient [optional])
+ * 
+ * Sends a personal message to the given recipient.
+ * If no recipient is given, sends a message to yourself.
+ */
+function api_sendPM(message, recipient = INT_USER_ID) {
+  if(!TOKEN_REGEXP.test(recipient)) {
+    throw new Error(
+      "Invalid recipient ID \"" + recipient + "\", doesn't match pattern 12345678-90ab-416b-cdef-1234567890ab",
+      { cause: recipient }
+    )
+  }
 
+  let params = Object.assign({
+    "contentType": "application/json",
+    "payload": JSON.stringify({
+      "message": String(message),
+      "toUserId": String(recipient)
+    })
+  }, POST_PARAMS);
+
+  api_fetch("https://habitica.com/api/v3/members/send-private-message", params);
+}
+
+/**
+ * api_createWebhook(webhookData)
+ * 
+ * Creates a webhook with the given webhook data.
+ * webhookData is an object with key/value pairs as defined by
+ * https://habitica.com/apidoc/#api-Webhook
+ * 
+ * The url is filled in automatically and
+ * the label is always set to the name of the script.
+ */
+function api_createWebhook(webhookData) {
+  Object.assign(webhookData, {
+    "url": getWebAppURL(),
+    "label": getScriptName()
+  })
+
+  let params = Object.assign({
+    "contentType": "application/json",
+    "payload": JSON.stringify(webhookData)
+  }, POST_PARAMS);
+
+  api_fetch("https://habitica.com/api/v3/user/webhook", params);
+}
+
+/**
+ * api_getUser(forceFetch [optional])
+ * 
+ * Returns the user data from the Habitica API.
+ * The user data is cached by default. Use forceFetch to force
+ * a new fetch from the Habitica API and received updated user data.
+ */
+let _cachedUser;
+function api_getUser(forceFetch = false) {
+  if (forceFetch || typeof _cachedUser === "undefined") {
+    let response = api_fetch("https://habitica.com/api/v3/user", GET_PARAMS);
+    let obj = parseJSON(response);
+    _cachedUser = obj.data;
+  }
+  return _cachedUser;
+}
+
+/**
+ * parseJSON(json)
+ * 
+ * Wrapper for JSON.parse(json)
+ * https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+ * 
+ * This function is mainly for debugging purposes, since JSON.parse() fails often.
+ * It logs the failed JSON string to the debugging console and appends to the error as its cause.
+ */
+function parseJSON(json) {
+  try {
+    return JSON.parse(json);
+  }
+  catch (error) {
+    logDebug("parseJSON() - Failed JSON string:\n\n", json);
+    error.cause = json;
+    throw error;
+  }
+}
+
+/**
+ * getScriptName()
+ * 
+ * Returns the name of this script.
+ */
+function getScriptName() {
+  return DriveApp.getFileById(ScriptApp.getScriptId()).getName();
+}
+
+/**
+ * getWebAppURL()
+ * 
+ * Returns the Web App URL of the current script deployment.
+ * This value is stored once the user opens the Web App in the browser.
+ */
+function getWebAppURL() {
+  let webAppURL = scriptProperties.getProperty("webAppURL");
+  
+  if (!webAppURL) {
+    throw new Error("Web App URL is not yet set");
+  }
+
+  return webAppURL;
+}
