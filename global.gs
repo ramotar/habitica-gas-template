@@ -39,11 +39,17 @@ function getScriptName() {
 }
 
 /**
- * getWebAppURL()
+ * setWebAppURL(webAppURL) / getWebAppURL()
  * 
- * Returns the Web App URL of the current script deployment.
+ * Set the Web App URL.
+ * 
+ * Return the Web App URL of the current script deployment.
  * This value is stored once the user opens the Web App in the browser.
+ * Throws an error, if the Web App URL hasn't been stored yet.
  */
+function setWebAppURL(webAppURL) {
+  scriptProperties.setProperty("webAppURL", String(webAppURL));
+}
 function getWebAppURL() {
   let webAppURL = scriptProperties.getProperty("webAppURL");
   
@@ -52,4 +58,30 @@ function getWebAppURL() {
   }
 
   return webAppURL;
+}
+
+/**
+ * updateInstallTime() / deleteInstallTime() / getInstallTime()
+ * 
+ * Updates the setup time to now.
+ * 
+ * Deletes the stored setup time.
+ * 
+ * Returns the time the of the last setup execution
+ * or null, if setup wasn't executed yet.
+ */
+function updateInstallTime() {
+  scriptProperties.setProperty("installTime", new Date().toISOString());
+}
+function deleteInstallTime() {
+  scriptProperties.deleteProperty("installTime");
+}
+function getInstallTime() {
+  let installTime = scriptProperties.getProperty("installTime");
+  
+  if (installTime) {
+    installTime = new Date(installTime);
+  }
+
+  return installTime;
 }
