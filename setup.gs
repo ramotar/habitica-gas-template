@@ -66,6 +66,13 @@ function uninstall() {
   logInfo("Removal of the script succesfully finished!");
 }
 
+function update() {
+  // [Developers] This function updates the script after the user changed settings.
+  // - It simply uninstalls and installs again.
+  uninstall();
+  install();
+}
+
 function createTriggers() {
   // [Developers] This function is used to create your necessary triggers
   // - Below you find an example trigger, that recurs every hour
