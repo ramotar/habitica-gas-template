@@ -48,12 +48,13 @@ class RateLimit {
   }
 
   update(headers) {
-    this.limit = Number(headers.get("X-RateLimit-Limit"));
-    this.remaining = Number(headers.get("X-RateLimit-Remaining"));
-    this.reset = new Date(headers.get("X-RateLimit-Reset"));
+    this.limit = Number(headers["x-ratelimit-limit"]);
+    this.remaining = Number(headers["x-ratelimit-remaining"]);
+    this.reset = new Date(headers["x-ratelimit-reset"]);
 
-    if (headers.has("Retry-After")) {
-      this.retryAfter = Number(headers.get("Retry-After"));
+    let retryAfter = headers["Retry-After"];
+    if (retryAfter !== undefined) {
+      this.retryAfter = Number(retryAfter);
     }
     else {
       this.retryAfter = null;
