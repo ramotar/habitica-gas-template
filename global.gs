@@ -1,5 +1,5 @@
 /**
- * doPost(e)
+ * doPost(event)
  *
  * Function to handle POST requests to the Web App.
  * Each webhook activation will send a POST request
@@ -11,9 +11,9 @@
  * one to take care of immediate actions (which should be very lightweight)
  * and the second for heavy work (via an asynchronous trigger).
  */
-function doPost(e) {
+function doPost(event) {
   try {
-    const dataContents = parseJSON(e.postData.contents);
+    const dataContents = parseJSON(event.postData.contents);
     const type = dataContents.type;
 
     // Process the webhook
@@ -52,9 +52,12 @@ function doPost(e) {
   return HtmlService.createHtmlOutput();
 }
 
-function doPostTriggered(e) {
+/**
+ * doPostTriggered()
+ */
+function doPostTriggered(event) {
   // Retrieve triggerId and the webhook data
-  const triggerId = e.triggerUid;
+  const triggerId = event.triggerUid;
   const dataContents = CacheService.getScriptCache().get(triggerId);
   const type = dataContents.type;
 
@@ -72,12 +75,12 @@ function doPostTriggered(e) {
 }
 
 /**
- * doGet(e)
+ * doGet(event)
  *
  * Function to handle GET requests to the Web App.
  * Serves the interface to the script user.
  */
-function doGet(e) {
+function doGet(event) {
   let webAppURL = ScriptApp.getService().getUrl();
   setWebAppURL(webAppURL);
 
