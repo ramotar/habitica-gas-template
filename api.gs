@@ -135,10 +135,10 @@ function api_fetch(url, params, instant = false, maxAttempts = 3) {
     if (response.getResponseCode() < 500) {
       break;
     }
-    // if 5xx server error, try again after 10 seconds
+    // if 5xx server error, try again after 5 seconds
     if (response.getResponseCode() >= 500) {
       if (attempt < maxAttempts - 1) {
-        Utilities.sleep(10000);
+        Utilities.sleep(5000);
       }
       continue;
     }
