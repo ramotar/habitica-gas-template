@@ -20,6 +20,13 @@ const API_TOKEN = "PasteYourApiTokenHere";
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
+
+// [Developers] Place your user ID and script name here
+// - This is used for the "X-Client" HTTP header
+// - See https://habitica.fandom.com/wiki/Guidance_for_Comrades#X-Client_Header
+const AUTHOR_ID = "PasteAuthorUserIdHere";
+const SCRIPT_NAME = "TypeScriptNameHere";
+
 function install() {
   // [Developers] These are one-time initial setup instructions that we'll ask
   //   the user to manually execute only once, during initial script setup
