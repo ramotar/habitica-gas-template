@@ -39,32 +39,18 @@ function doPost(event) {
     processWebhookInstant(type, dataContents);
 
     // Create a trigger for delayed processing
-    var trigger = ScriptApp.newTrigger('doPostTriggered').timeBased().after(1);
+    var trigger = ScriptApp.newTrigger('doPostTriggered').timeBased().after(1).create();
     CacheService.getScriptCache().put(
       trigger.getUniqueId(),
-      dataContents
+      event.postData.contents
     );
-    trigger.create();
   }
   catch (error) {
-    // Log the error to the console
-    logError(error.stack);
-
     // To prevent Habitica from shutting down the webhook because it is unresponsive,
     // the error is not re-thrown and doPost() will exit normally.
     // Since this execution will therefore not be detected as failed by Google Apps Script,
     // the user is informed via mail about the error condition.
-    let body = "Your script, " + getScriptName() + ", has recently failed to finish successfully. The error stack is shown below.\n\n";
-    body += error.stack;
-    if (error.hasOwnProperty("cause")) {
-      body += "\n\ncaused by:\n\n" + JSON.stringify(error.cause);
-    }
-
-    MailApp.sendEmail(
-      Session.getEffectiveUser().getEmail(),
-      getScriptName() + " failed!",
-      body
-    );
+    notifyUserOfError(error);
   }
 
   // Send a response - no matter what happened
@@ -75,22 +61,51 @@ function doPost(event) {
  * doPostTriggered()
  */
 function doPostTriggered(event) {
-  // Retrieve triggerId and the webhook data
-  const triggerId = event.triggerUid;
-  const dataContents = CacheService.getScriptCache().get(triggerId);
-  const type = dataContents.type;
+  try {
+    // Retrieve triggerId and the webhook data
+    const triggerId = event.triggerUid;
+    const dataContents = parseJSON(CacheService.getScriptCache().get(triggerId));
+    const type = dataContents.type;
 
-  // Delete the trigger
-  let triggers = ScriptApp.getProjectTriggers();
-  for (let trigger in triggers) {
-    if (trigger.getUniqueId() === triggerId) {
-      ScriptApp.deleteTrigger(trigger);
-      break;
+    // Delete the trigger
+    let triggers = ScriptApp.getProjectTriggers();
+    for (let trigger of triggers) {
+      if (trigger.getUniqueId() === triggerId) {
+        ScriptApp.deleteTrigger(trigger);
+        break;
+      }
     }
-  }
 
-  // Process the webhook
-  processWebhookDelayed(type, dataContents);
+    // Process the webhook
+    processWebhookDelayed(type, dataContents);
+  }
+  catch (error) {
+    // Notify the user
+    notifyUserOfError(error);
+
+    // Rethrow the error
+    throw error;
+  }
+}
+
+/**
+ * notifyUserOfError(error)
+ *
+ * Notifies the user via mail of the provided error.
+ */
+function notifyUserOfError(error) {
+  let body = "Your script, " + getScriptName() + ", has recently failed to finish successfully. The error stack is shown below.\n\n";
+  body += error.stack;
+  if (error.hasOwnProperty("cause")) {
+    body += "\n\ncaused by:\n\n" + JSON.stringify(error.cause);
+  }
+  body += "\n\n" + Logger.getLog();
+
+  MailApp.sendEmail(
+    Session.getEffectiveUser().getEmail(),
+    getScriptName() + " failed!",
+    body
+  );
 }
 
 /**
