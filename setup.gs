@@ -10,7 +10,7 @@ const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
 /* [Users] Required customizations to fill in */
 /* ========================================== */
 // [Developers] Place all mandatory user-modified variables here
-// - e.g, skill to use, number of times to use, task to use skill on, etc.
+// - e.g. skill to use, number of times to use, task to use skill on, etc.
 
 /* ========================================== */
 /* [Users] Optional customizations to fill in */
@@ -31,9 +31,9 @@ function doOneTimeSetup() {
 }
 
 function doRemoval() {
-    // [Developers] These are one-time instructions that we'll tell the user to
-    //   execute during script removal
-    // - Add api_removeWebhook() here, if you created a webhook during initial setup
-    // - Remove all other permanent changes the script has introduced during initial
-    //   setup and normal use
-  }
+  // [Developers] These are one-time instructions that we'll tell the user to
+  //   execute during script removal
+  // - Add api_removeWebhook() here, if you created a webhook during initial setup
+  // - Remove all other permanent changes the script has introduced during initial
+  //   setup and normal use
+}
