@@ -31,6 +31,8 @@ function doGet(event) {
  * and the second for heavy work (via an asynchronous trigger).
  */
 function doPost(event) {
+  logDebug(JSON.stringify(event));
+
   try {
     const dataContents = parseJSON(event.postData.contents);
     const type = dataContents.type;
@@ -61,6 +63,8 @@ function doPost(event) {
  * doPostTriggered()
  */
 function doPostTriggered(event) {
+  logDebug(JSON.stringify(event));
+
   try {
     // Retrieve triggerId and the webhook data
     const triggerId = event.triggerUid;
