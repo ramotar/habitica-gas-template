@@ -1,14 +1,3 @@
-// [Developers] Place your user ID and script name here
-// - This is used for the "X-Client" HTTP header
-// - See https://habitica.fandom.com/wiki/Guidance_for_Comrades#X-Client_Header
-const AUTHOR_ID = "PasteAuthorUserIdHere";
-const SCRIPT_NAME = "TypeScriptNameHere";
-
-/* ================================================= */
-/* [Developers] No need to edit below this point,    */
-/*   but feel free to have a look and tinker with it */
-/* ================================================= */
-
 /**
  * Define regular expression to test user ID and API tokens
  */
