@@ -79,6 +79,8 @@ class RateLimit {
     else {
       this.retryAfter = null;
     }
+
+    logDebug("RateLimit.update()\n\n", this);
   }
 
   msToReset() {
@@ -98,20 +100,20 @@ class RateLimit {
 let rateLimit = new RateLimit(null);
 
 /**
- * api_fetch(url, params, instant [optional], max_attempts [optional])
+ * api_fetch(url, params, instant [optional], maxAttempts [optional])
  *
  * Wrapper for Google Apps Script's UrlFetchApp.fetch(url, params):
  * https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app#fetchurl,-params
  *
  * Retries failed API calls, if the addressed server is down and
- * up to a total number of attempts defined by optional parameter max_attempts.
+ * up to a total number of attempts defined by optional parameter maxAttempts.
  *
- * Also handles Habitica's rate limiting, if their API is called.
+ * Also handles Habitica's rate limiting.
  */
-function api_fetch(url, params, instant = false, max_attempts = 3) {
+function api_fetch(url, params, instant = false, maxAttempts = 3) {
   var response;
 
-  for (let attempt = 0; attempt < max_attempts; attempt++) {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
 
     // if rate limit reached
     if (rateLimit.reached) {
@@ -151,7 +153,7 @@ function api_fetch(url, params, instant = false, max_attempts = 3) {
     }
     // if 5xx server error, try again after 10 seconds
     if (response.getResponseCode() >= 500) {
-      if (attempt < max_attempts - 1) {
+      if (attempt < maxAttempts - 1) {
         Utilities.sleep(10000);
       }
       continue;
@@ -162,6 +164,7 @@ function api_fetch(url, params, instant = false, max_attempts = 3) {
 
   // if request failed finally, throw exception
   throw new Error(
-    "Request failed for " + domain + " returned code " + response.getResponseCode() + ". Truncated server response: " + response.getContentText()
+    "Request failed for " + domain + " returned code " + response.getResponseCode() + ". Truncated server response: " + response.getContentText(),
+    { cause: response }
   );
 }
