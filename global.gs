@@ -10,15 +10,33 @@ const SCRIPT_NAME = "TypeScriptNameHere";
 // - See https://developers.google.com/apps-script/reference/properties/properties-service
 const scriptProperties = PropertiesService.getScriptProperties();
 
+/* ================================================= */
+/* [Developers] No need to edit below this point,    */
+/*   but feel free to have a look and tinker with it */
+/* ================================================= */
 
+/**
+ * Define regular expression to test user ID and API tokens
+ */
+const TOKEN_REGEXP = new RegExp("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 
-// [Developers] No need to edit below this point,
-//   but feel free to have a look and tinker with it
+/**
+ * Define internal constants for USER_ID and API_TOKEN as well as AUTHOR_ID and SCRIPT_NAME
+ *
+ * Those are used for development purposes to prevent leakage of developer secrets.
+ */
+const INT_USER_ID = (typeof DEVELOPMENT === "undefined" ? USER_ID : DEVELOPER_ID);
+const INT_API_TOKEN = (typeof DEVELOPMENT === "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN);
+const INT_AUTHOR_ID = (typeof DEVELOPMENT === "undefined" ? AUTHOR_ID : DEVELOPER_ID);
+const INT_SCRIPT_NAME = (typeof DEVELOPMENT === "undefined" ? SCRIPT_NAME : DEVELOPER_SCRIPT_NAME);
 
+/**
+ * Define the headers for API calls
+ */
 const HEADERS = {
-  "x-client": (typeof DEVELOPMENT == "undefined" ? AUTHOR_ID + "-" + SCRIPT_NAME : DEVELOPER_ID + "-" + DEVELOPER_SCRIPT_NAME),
-  "x-api-user": (typeof DEVELOPMENT == "undefined" ? USER_ID : DEVELOPER_ID),
-  "x-api-key": (typeof DEVELOPMENT == "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN),
+  "x-client": INT_AUTHOR_ID + "-" + INT_SCRIPT_NAME,
+  "x-api-user": INT_USER_ID,
+  "x-api-key": INT_API_TOKEN,
 }
 const PARAMS = {
   "headers": HEADERS,
