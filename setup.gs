@@ -99,7 +99,7 @@ function createTriggers() {
 
   logInfo("Creating triggers");
 
-  ScriptApp.newTrigger("doTrigger")
+  ScriptApp.newTrigger("processTrigger")
     .timeBased()
     .everyHours(1)
     .create();
