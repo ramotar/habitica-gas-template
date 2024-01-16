@@ -24,3 +24,8 @@ function doPost(e) {
 
   return HtmlService.createHtmlOutput();
 }
+
+
+function doTrigger() {
+
+}
