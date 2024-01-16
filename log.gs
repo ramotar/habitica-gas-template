@@ -1,4 +1,4 @@
-// [Developers] These are the available log levels
+// [Authors] These are the available log levels
 // - They correspond to the functions of the console Class.
 // - See https://developers.google.com/apps-script/reference/base/console
 const LOG_DEBUG = 3;
@@ -6,11 +6,11 @@ const LOG_INFO  = 2;
 const LOG_WARN  = 1;
 const LOG_ERROR = 0;
 
-// [Developers] Define the current log level
+// [Authors] Define the current log level
 // - All messages of this level and below will be logged.
 const LOG_LEVEL = LOG_DEBUG;
 
-// [Developers] No need to edit below this point,
+// [Authors] No need to edit below this point,
 //   but feel free to have a look and tinker with it
 
 /**
