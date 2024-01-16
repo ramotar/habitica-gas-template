@@ -4,12 +4,16 @@
 
 
 function doGet(e) {
-  var webAppURL = ScriptApp.getService().getUrl();
-  scriptProperties.setProperty("webAppURL", webAppURL);
+  let webAppURL = ScriptApp.getService().getUrl();
+  setWebAppURL(webAppURL);
 
-  doOneTimeSetup
+  let template = HtmlService.createTemplateFromFile('doGet');
+  template.installTime = getInstallTime();
 
-  return ContentService.createTextOutput(webAppURL);
+  let output = template.evaluate();
+  output.setTitle(getScriptName());
+
+  return output;
 }
 
 
