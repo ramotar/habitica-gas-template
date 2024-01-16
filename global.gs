@@ -10,17 +10,7 @@ const SCRIPT_NAME = "TypeScriptNameHere";
 // - See https://developers.google.com/apps-script/reference/properties/properties-service
 const scriptProperties = PropertiesService.getScriptProperties();
 
-function doPost(e) {
-  // [Developers] This is the function that will be executed whenever Habitica
-  //   encounters the designated event
 
-  const dataContents = JSON.parse(e.postData.contents);
-  const webhookType = dataContents.type;
-
-  // [Developers] Add script actions here
-
-  return HtmlService.createHtmlOutput();
-}
 
 // [Developers] No need to edit below this point,
 //   but feel free to have a look and tinker with it
