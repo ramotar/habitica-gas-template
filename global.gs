@@ -10,6 +10,98 @@ const scriptProperties = PropertiesService.getScriptProperties();
 /* ================================================= */
 
 /**
+ * doPost(e)
+ *
+ * Function to handle POST requests to the Web App.
+ * Each webhook activation will send a POST request
+ * and thereby trigger this function.
+ *
+ * Since webhooks need to respond within 30 seconds
+ * (see https://habitica.fandom.com/wiki/Webhooks#Technical_Details),
+ * doPost() calls two separate processing functions -
+ * one to take care of immediate actions (which should be very lightweight)
+ * and the second for heavy work (via an asynchronous trigger).
+ */
+function doPost(e) {
+  try {
+    const dataContents = parseJSON(e.postData.contents);
+    const type = dataContents.type;
+
+    // Process the webhook
+    processWebhookInstant(type, dataContents);
+
+    // Create a trigger for delayed processing
+    var trigger = ScriptApp.newTrigger('doPostTriggered').timeBased().after(1);
+    CacheService.getScriptCache().put(
+      trigger.getUniqueId(),
+      dataContents
+    );
+    trigger.create();
+  }
+  catch (error) {
+    // Log the error to the console
+    logError(error.stack);
+
+    // To prevent Habitica from shutting down the webhook because it is unresponsive,
+    // the error is not re-thrown and doPost() will exit normally.
+    // Since this execution will therefore not be detected as failed by Google Apps Script,
+    // the user is informed via mail about the error condition.
+    let body = "Your script, " + getScriptName() + ", has recently failed to finish successfully. The error stack is shown below.\n\n";
+    body += error.stack;
+    if (error.hasOwnProperty("cause")) {
+      body += "\n\ncaused by:\n\n" + JSON.stringify(error.cause);
+    }
+
+    MailApp.sendEmail(
+      Session.getEffectiveUser().getEmail(),
+      getScriptName() + " failed!",
+      body
+    );
+  }
+
+  // Send a response - no matter what happened
+  return HtmlService.createHtmlOutput();
+}
+
+function doPostTriggered(e) {
+  // Retrieve triggerId and the webhook data
+  const triggerId = e.triggerUid;
+  const dataContents = CacheService.getScriptCache().get(triggerId);
+  const type = dataContents.type;
+
+  // Delete the trigger
+  let triggers = ScriptApp.getProjectTriggers();
+  for (let trigger in triggers) {
+    if (trigger.getUniqueId() === triggerId) {
+      ScriptApp.deleteTrigger(trigger);
+      break;
+    }
+  }
+
+  // Process the webhook
+  processWebhookDelayed(type, dataContents);
+}
+
+/**
+ * doGet(e)
+ *
+ * Function to handle GET requests to the Web App.
+ * Serves the interface to the script user.
+ */
+function doGet(e) {
+  let webAppURL = ScriptApp.getService().getUrl();
+  setWebAppURL(webAppURL);
+
+  let template = HtmlService.createTemplateFromFile('doGet');
+  template.installTime = getInstallTime();
+
+  let output = template.evaluate();
+  output.setTitle(getScriptName());
+
+  return output;
+}
+
+/**
  * parseJSON(json)
  *
  * Wrapper for JSON.parse(json)
