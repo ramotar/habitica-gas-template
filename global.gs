@@ -14,9 +14,9 @@ const scriptProperties = PropertiesService.getScriptProperties();
 //   but feel free to have a look and tinker with it
 
 const HEADERS = {
-  "x-client" : AUTHOR_ID + "-" + SCRIPT_NAME,
-  "x-api-user" : USER_ID,
-  "x-api-key" : API_TOKEN,
+  "x-client": AUTHOR_ID + "-" + SCRIPT_NAME,
+  "x-api-user": USER_ID,
+  "x-api-key": API_TOKEN,
 }
 const PARAMS = {
   "headers": HEADERS,
