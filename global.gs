@@ -28,13 +28,13 @@ const DELETE_PARAMS = Object.assign({ "method": "delete" }, PARAMS);
 
 
 function doPost(e) {
-    // [Developers] This is the function that will be executed whenever Habitica
-    //   encounters the designated event
-  
-    const dataContents = JSON.parse(e.postData.contents);
-    const webhookType = dataContents.type;
-  
-    // [Developers] Add script actions here
-  
-    return HtmlService.createHtmlOutput();
-  }
+  // [Developers] This is the function that will be executed whenever Habitica
+  //   encounters the designated event
+
+  const dataContents = JSON.parse(e.postData.contents);
+  const webhookType = dataContents.type;
+
+  // [Developers] Add script actions here
+
+  return HtmlService.createHtmlOutput();
+}
