@@ -78,18 +78,20 @@ class RateLimit {
 let rateLimit = new RateLimit(null);
 
 /**
- * fetch(url, params, max_retries [optional])
+ * api_fetch(url, params, instant [optional], max_attempts [optional])
  *
  * Wrapper for Google Apps Script's UrlFetchApp.fetch(url, params):
  * https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app#fetchurl,-params
  *
  * Retries failed API calls, if the addressed server is down and
- * up to a total number of attempts defined by optional parameter max_retries.
+ * up to a total number of attempts defined by optional parameter max_attempts.
  *
  * Also handles Habitica's rate limiting, if their API is called.
  */
-function fetch(url, params, instant = false, max_retries = 3) {
-  for (let i = 0; i < max_retries; i++) {
+function api_fetch(url, params, instant = false, max_attempts = 3) {
+  var response;
+
+  for (let attempt = 0; attempt < max_attempts; attempt++) {
 
     // if rate limit reached
     if (rateLimit.reached) {
@@ -102,43 +104,46 @@ function fetch(url, params, instant = false, max_retries = 3) {
     }
 
     // call API
-    let response;
-    while (true) {
-      try {
-        response = UrlFetchApp.fetch(url, params);
-        break;
-      }
-      // if address unavailable, wait 5 seconds & try again
-      catch (e) {
-        if (!webhook && e.stack.includes("Address unavailable")) {
-          Utilities.sleep(5000);
-        } else {
-          throw e;
-        }
-      }
-    }
+    response = UrlFetchApp.fetch(url, params);
 
     // store rate limiting data
     rateLimit.update(response.getHeaders());
 
     // if success, return response
-    if (response.getResponseCode() < 300 || (response.getResponseCode() === 404 && (url === "https://habitica.com/api/v3/groups/party" || url.startsWith("https://habitica.com/api/v3/groups/party/members")))) {
+    if (
+      response.getResponseCode() < 300
+      || (
+        response.getResponseCode() === 404
+        && (url === "https://habitica.com/api/v3/groups/party" || url.startsWith("https://habitica.com/api/v3/groups/party/members"))
+      )
+    ) {
       return response;
     }
+
     // if rate limited due to running multiple scripts, try again
-    else if (response.getResponseCode() === 429) {
-      i--;
+    if (response.getResponseCode() === 429) {
+      // no need to wait, since rate limiting will take care
+      continue;
     }
-    // if 502 server error, try again after 30 seconds
-    else if (response.getResponseCode() === 502) {
-      Utilities.sleep(30000);
-      i--;
+    // if 3xx or 4xx, do not retry
+    if (response.getResponseCode() < 500) {
+      break;
     }
-    // if 3xx or 4xx or failed 3 times, throw exception
-    else if (response.getResponseCode() < 500 || i >= 2) {
-      throw new Error("Request failed for https://habitica.com returned code " + response.getResponseCode() + ". Truncated server response: " + response.getContentText());
+    // if 5xx server error, try again after 10 seconds
+    if (response.getResponseCode() >= 500) {
+      if (attempt < max_attempts - 1) {
+        Utilities.sleep(10000);
+      }
+      continue;
     }
   }
+
+  let domain = url.split("/", 3).join("/");
+
+  // if request failed finally, throw exception
+  throw new Error(
+    "Request failed for " + domain + " returned code " + response.getResponseCode() + ". Truncated server response: " + response.getContentText()
+  );
 }
 
 function doPost(e) {
