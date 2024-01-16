@@ -20,17 +20,15 @@ const API_TOKEN = "PasteYourApiTokenHere";
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
-function doOneTimeSetup() {
+function install() {
   // [Developers] These are one-time initial setup instructions that we'll ask
   //   the user to manually execute only once, during initial script setup
-  // - Add api_createWebhook() here, already set up to activate the trigger to the
-  //   event that you want to service
+  // - Add triggers and webhooks for your script to service the events you care about
   // - Feel free to do all other one-time setup actions here as well
   //   e.g. creating tasks, reward buttons, etc.
 
   // check, if setup was already executed
-  let setupTime = scriptProperties.getProperty("setupTime");
-  if (!setupTime) {
+  if (!getInstallTime()) {
 
     // if all options entered by the user are valid
     if (validateOptions()) {
@@ -39,21 +37,21 @@ function doOneTimeSetup() {
       // create webhooks
       createWebhooks();
 
-      // save the time the setup was completed
-      scriptProperties.setProperty("setupTime", new Date().toISOString());
+      // save the time the installation was completed
+      updateInstallTime();
 
-      logInfo("One time setup of the script succesfully finished!");
+      logInfo("Installation of the script succesfully finished!");
     }
   }
   else {
-    logError("Setup of the script was already executed before")
+    logError("Installation of the script was already executed before")
   }
 }
 
-function doRemoval() {
+function uninstall() {
   // [Developers] These are one-time instructions that we'll tell the user to
   //   execute during script removal
-  // - Add api_removeWebhook() here, if you created a webhook during initial setup
+  // - Add deleteWebhooks() here, if you created a webhook during initial setup
   // - Remove all other permanent changes the script has introduced during initial
   //   setup and normal use
 
@@ -62,8 +60,8 @@ function doRemoval() {
   // delete webhooks
   deleteWebhooks();
 
-  // remove the setup flag
-  scriptProperties.deleteProperty("setupTime");
+  // remove the install time
+  deleteInstallTime();
 
   logInfo("Removal of the script succesfully finished!");
 }
