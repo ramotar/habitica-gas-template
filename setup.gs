@@ -3,8 +3,7 @@
 /* ========================================== */
 const USER_ID = "PasteYourUserIdHere";
 const API_TOKEN = "PasteYourApiTokenHere";
-// IMPORTANT: Do not share your API token with anyone
-const WEB_APP_URL = "PasteGeneratedWebAppUrlHere";
+// IMPORTANT: Do not share your API token with anyone!
 
 /* ========================================== */
 /* [Users] Required customizations to fill in */

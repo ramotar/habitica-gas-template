@@ -168,3 +168,114 @@ function api_fetch(url, params, instant = false, maxAttempts = 3) {
     { cause: response }
   );
 }
+
+/**
+ * api_sendPM(message, recipient [optional])
+ *
+ * Sends a personal message to the given recipient.
+ * If no recipient is given, sends a message to yourself.
+ */
+function api_sendPM(message, recipient = INT_USER_ID) {
+  if (!TOKEN_REGEXP.test(recipient)) {
+    throw new Error(
+      "Invalid recipient ID \"" + recipient + "\", doesn't match pattern 12345678-90ab-416b-cdef-1234567890ab",
+      { cause: recipient }
+    )
+  }
+
+  let params = Object.assign({
+    "contentType": "application/json",
+    "payload": JSON.stringify({
+      "message": String(message),
+      "toUserId": String(recipient)
+    })
+  }, POST_PARAMS);
+
+  api_fetch("https://habitica.com/api/v3/members/send-private-message", params);
+}
+
+/**
+ * api_createWebhook(webhookData)
+ *
+ * Creates a webhook with the given webhook data.
+ * webhookData is an object with key/value pairs as defined by
+ * https://habitica.com/apidoc/#api-Webhook
+ *
+ * The url is filled in automatically and
+ * the label is always set to the name of the script.
+ */
+function api_createWebhook(webhookData) {
+  Object.assign(webhookData, {
+    "url": getWebAppURL(),
+    "label": getScriptName()
+  })
+
+  let params = Object.assign({
+    "contentType": "application/json",
+    "payload": JSON.stringify(webhookData)
+  }, POST_PARAMS);
+
+  api_fetch("https://habitica.com/api/v3/user/webhook", params);
+}
+
+/**
+ * api_getUser(forceFetch [optional])
+ *
+ * Returns the user data from the Habitica API.
+ * The user data is cached by default. Use forceFetch to force
+ * a new fetch from the Habitica API and received updated user data.
+ */
+let _cachedUser;
+function api_getUser(forceFetch = false) {
+  if (forceFetch || typeof _cachedUser === "undefined") {
+    let response = api_fetch("https://habitica.com/api/v3/user", GET_PARAMS);
+    let obj = parseJSON(response);
+    _cachedUser = obj.data;
+  }
+  return _cachedUser;
+}
+
+/**
+ * parseJSON(json)
+ *
+ * Wrapper for JSON.parse(json)
+ * https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
+ *
+ * This function is mainly for debugging purposes, since JSON.parse() fails often.
+ * It logs the failed JSON string to the debugging console and appends to the error as its cause.
+ */
+function parseJSON(json) {
+  try {
+    return JSON.parse(json);
+  }
+  catch (error) {
+    logDebug("parseJSON() - Failed JSON string:\n\n", json);
+    error.cause = json;
+    throw error;
+  }
+}
+
+/**
+ * getScriptName()
+ *
+ * Returns the name of this script.
+ */
+function getScriptName() {
+  return DriveApp.getFileById(ScriptApp.getScriptId()).getName();
+}
+
+/**
+ * getWebAppURL()
+ *
+ * Returns the Web App URL of the current script deployment.
+ * This value is stored once the user opens the Web App in the browser.
+ */
+function getWebAppURL() {
+  let webAppURL = scriptProperties.getProperty("webAppURL");
+
+  if (!webAppURL) {
+    throw new Error("Web App URL is not yet set");
+  }
+
+  return webAppURL;
+}
