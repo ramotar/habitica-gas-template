@@ -26,9 +26,9 @@ function doPost(e) {
 //   but feel free to have a look and tinker with it
 
 const HEADERS = {
-  "x-client": AUTHOR_ID + "-" + SCRIPT_NAME,
-  "x-api-user": USER_ID,
-  "x-api-key": API_TOKEN,
+  "x-client": (typeof DEVELOPMENT == "undefined" ? AUTHOR_ID + "-" + SCRIPT_NAME : DEVELOPER_ID + "-" + DEVELOPER_SCRIPT_NAME),
+  "x-api-user": (typeof DEVELOPMENT == "undefined" ? USER_ID : DEVELOPER_ID),
+  "x-api-key": (typeof DEVELOPMENT == "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN),
 }
 const PARAMS = {
   "headers": HEADERS,
