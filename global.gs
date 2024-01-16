@@ -1,14 +1,3 @@
-// [Developers] Add global variables here
-// - Note that these do not persist in between script calls
-// - If you want to save values between calls, use PropertiesService
-// - See https://developers.google.com/apps-script/reference/properties/properties-service
-const scriptProperties = PropertiesService.getScriptProperties();
-
-/* ================================================= */
-/* [Developers] No need to edit below this point,    */
-/*   but feel free to have a look and tinker with it */
-/* ================================================= */
-
 /**
  * doPost(e)
  *

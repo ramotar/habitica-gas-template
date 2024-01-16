@@ -8,27 +8,39 @@ const API_TOKEN = "PasteYourApiTokenHere";
 /* ========================================== */
 /* [Users] Required customizations to fill in */
 /* ========================================== */
-// [Developers] Place all mandatory user-modified variables here
+// [Authors] Place all mandatory user-modified variables here
 // - e.g. skill to use, number of times to use, task to use skill on, etc.
 
 /* ========================================== */
 /* [Users] Optional customizations to fill in */
 /* ========================================== */
-// [Developers] Place all optional user-modified variables here
+// [Authors] Place all optional user-modified variables here
 // - e.g. enable/disable notifications, enable/disable script features, etc.
 
 /* ========================================== */
 /* [Users] Do not edit code below this line   */
 /* ========================================== */
 
-// [Developers] Place your user ID and script name here
+// [Authors] Place your user ID and script name here
 // - This is used for the "X-Client" HTTP header
 // - See https://habitica.fandom.com/wiki/Guidance_for_Comrades#X-Client_Header
 const AUTHOR_ID = "PasteAuthorUserIdHere";
 const SCRIPT_NAME = "TypeScriptNameHere";
 
+// [Authors] Add global variables here
+// - Note that these do not persist in between script calls
+// - If you want to save values between calls, use PropertiesService
+// - See https://developers.google.com/apps-script/reference/properties/properties-service
+const scriptProperties = PropertiesService.getScriptProperties();
+
+/* =================================== */
+/* [Authors] Below you find functions, */
+/*   that are only used once during    */
+/*   installation, update or removal   */
+/* =================================== */
+
 function install() {
-  // [Developers] These are one-time initial setup instructions that we'll ask
+  // [Authors] These are one-time initial setup instructions that we'll ask
   //   the user to manually execute only once, during initial script setup
   // - Add triggers and webhooks for your script to service the events you care about
   // - Feel free to do all other one-time setup actions here as well
@@ -56,7 +68,7 @@ function install() {
 }
 
 function uninstall() {
-  // [Developers] These are one-time instructions that we'll tell the user to
+  // [Authors] These are one-time instructions that we'll tell the user to
   //   execute during script removal
   // - Add deleteWebhooks() here, if you created a webhook during initial setup
   // - Remove all other permanent changes the script has introduced during initial
@@ -74,14 +86,14 @@ function uninstall() {
 }
 
 function update() {
-  // [Developers] This function updates the script after the user changed settings.
+  // [Authors] This function updates the script after the user changed settings.
   // - It simply uninstalls and installs again.
   uninstall();
   install();
 }
 
 function createTriggers() {
-  // [Developers] This function is used to create your necessary triggers
+  // [Authors] This function is used to create your necessary triggers
   // - Below you find an example trigger, that recurs every hour
   // - Feel free to modify this trigger or add additional triggers
 
@@ -94,7 +106,7 @@ function createTriggers() {
 }
 
 function createWebhooks() {
-  // [Developers] This function is used to create webhooks to your script
+  // [Authors] This function is used to create webhooks to your script
   // - Below you find an example webhook, that gets called, when a task is scored
   // - Feel free to modify this webhook or add additional webhooks
 
@@ -110,7 +122,7 @@ function createWebhooks() {
 }
 
 function deleteTriggers() {
-  // [Developers] This function deletes all existing triggers for your script
+  // [Authors] This function deletes all existing triggers for your script
 
   let triggers = ScriptApp.getProjectTriggers();
   if (triggers.length > 0) {
@@ -124,7 +136,7 @@ function deleteTriggers() {
 }
 
 function deleteWebhooks() {
-  // [Developers] This function deletes all existing webhooks to your script
+  // [Authors] This function deletes all existing webhooks to your script
 
   let response = api_fetch("https://habitica.com/api/v3/user/webhook", GET_PARAMS);
   let obj = parseJSON(response);
@@ -145,7 +157,7 @@ function deleteWebhooks() {
 }
 
 function validateOptions() {
-  // [Developers] This function is used to validate the options entered by the user
+  // [Authors] This function is used to validate the options entered by the user
   // - Validation of the predefined script data is already programmed
   // - Usually check for the right type and value
 
@@ -174,7 +186,7 @@ function validateOptions() {
 }
 
 function testCredentials() {
-  // [Developers] This function tests the user credentials
+  // [Authors] This function tests the user credentials
 
   try {
     api_getUser();
