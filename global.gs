@@ -1,6 +1,6 @@
 /**
  * doGet(event)
- * 
+ *
  * Function to handle GET requests to the Web App.
  * Serves the interface to the script user.
  */
@@ -17,13 +17,13 @@ function doGet(event) {
   return output;
 }
 
-/** 
+/**
  * doPost(event)
- * 
+ *
  * Function to handle POST requests to the Web App.
  * Each webhook activation will send a POST request
  * and thereby trigger this function.
- * 
+ *
  * Since webhooks need to respond within 30 seconds
  * (see https://habitica.fandom.com/wiki/Webhooks#Technical_Details),
  * doPost() calls two separate processing functions -
@@ -39,7 +39,7 @@ function doPost(event) {
 
     // Process the webhook
     processWebhookInstant(type, dataContents);
-    
+
     // Create a trigger for delayed processing
     var trigger = ScriptApp.newTrigger('doPostTriggered').timeBased().after(1).create();
     CacheService.getScriptCache().put(
@@ -86,7 +86,7 @@ function doPostTriggered(event) {
   catch (error) {
     // Notify the user
     notifyUserOfError(error);
-    
+
     // Rethrow the error
     throw error;
   }
@@ -94,7 +94,7 @@ function doPostTriggered(event) {
 
 /**
  * notifyUserOfError(error)
- * 
+ *
  * Notifies the user via mail of the provided error.
  */
 function notifyUserOfError(error) {
@@ -114,10 +114,10 @@ function notifyUserOfError(error) {
 
 /**
  * parseJSON(json)
- * 
+ *
  * Wrapper for JSON.parse(json)
  * https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse
- * 
+ *
  * This function is mainly for debugging purposes, since JSON.parse() fails often.
  * It logs the failed JSON string to the debugging console and appends to the error as its cause.
  */
@@ -134,7 +134,7 @@ function parseJSON(json) {
 
 /**
  * getScriptName()
- * 
+ *
  * Returns the name of this script.
  */
 function getScriptName() {
@@ -143,9 +143,9 @@ function getScriptName() {
 
 /**
  * setWebAppURL(webAppURL) / getWebAppURL()
- * 
+ *
  * Set the Web App URL.
- * 
+ *
  * Return the Web App URL of the current script deployment.
  * This value is stored once the user opens the Web App in the browser.
  * Throws an error, if the Web App URL hasn't been stored yet.
@@ -155,7 +155,7 @@ function setWebAppURL(webAppURL) {
 }
 function getWebAppURL() {
   let webAppURL = scriptProperties.getProperty("webAppURL");
-  
+
   if (!webAppURL) {
     throw new Error("Web App URL is not yet set");
   }
@@ -165,11 +165,11 @@ function getWebAppURL() {
 
 /**
  * updateInstallTime() / deleteInstallTime() / getInstallTime()
- * 
+ *
  * Updates the setup time to now.
- * 
+ *
  * Deletes the stored setup time.
- * 
+ *
  * Returns the time the of the last setup execution
  * or null, if setup wasn't executed yet.
  */
@@ -181,7 +181,7 @@ function deleteInstallTime() {
 }
 function getInstallTime() {
   let installTime = scriptProperties.getProperty("installTime");
-  
+
   if (installTime) {
     installTime = new Date(installTime);
   }

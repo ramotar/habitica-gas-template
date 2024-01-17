@@ -18,7 +18,7 @@ function processWebhookDelayed(type, data) {
   // - Here you can take care of heavy work, that may take longer.
   // - It may take up to 30 - 60 seconds for this function to activate
   //   after the webhook was triggered.
-  
+
   api_sendPM("This is the delayed reaction to the webhook \"" + type + "\"\n" + JSON.stringify(data));
 }
 

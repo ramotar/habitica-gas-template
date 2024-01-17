@@ -177,7 +177,7 @@ function validateOptions() {
   if (valid) {
     valid = testCredentials();
   }
-  
+
   if (!valid) {
     logInfo("Please fix the above errors, create a new version of the deployment, and run the doOneTimeSetup() function again.\nIf you aren't sure how to do this, see \"Changing the Settings\" in the documentation for this script.");
   }
