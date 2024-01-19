@@ -8,10 +8,10 @@ const TOKEN_REGEXP = new RegExp("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4
  *
  * Those are used for development purposes to prevent leakage of developer secrets.
  */
-const INT_USER_ID = (typeof DEVELOPMENT === "undefined" ? USER_ID : DEVELOPER_ID);
-const INT_API_TOKEN = (typeof DEVELOPMENT === "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN);
-const INT_AUTHOR_ID = (typeof DEVELOPMENT === "undefined" ? AUTHOR_ID : DEVELOPER_ID);
-const INT_SCRIPT_NAME = (typeof DEVELOPMENT === "undefined" ? SCRIPT_NAME : DEVELOPER_SCRIPT_NAME);
+const INT_USER_ID = (typeof DEVELOPER_ID === "undefined" ? USER_ID : DEVELOPER_ID);
+const INT_API_TOKEN = (typeof DEVELOPER_API_TOKEN === "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN);
+const INT_AUTHOR_ID = (typeof DEVELOPER_ID === "undefined" ? AUTHOR_ID : DEVELOPER_ID);
+const INT_SCRIPT_NAME = (typeof DEVELOPER_SCRIPT_NAME === "undefined" ? SCRIPT_NAME : DEVELOPER_SCRIPT_NAME);
 
 /**
  * Define the headers for API calls
