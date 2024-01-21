@@ -1,5 +1,5 @@
 /**
- * Habitica: GAS Template v1.1 by @Turac
+ * Habitica: GAS Template v1.2.0 by @Turac
  *
  * See GitHub page for info & setup instructions:
  * https://github.com/ramotar/habitica-gas-template
@@ -210,6 +210,23 @@ function api_createWebhook(webhookData) {
 }
 
 /**
+ * api_getContent(forceFetch [optional])
+ *
+ * Returns the content data from the Habitica API.
+ * The content data is cached by default. Use forceFetch to force
+ * a new fetch from the Habitica API and received updated content data.
+ */
+let _cachedContent;
+function api_getContent(forceFetch = false) {
+  if (forceFetch || typeof _cachedContent === "undefined") {
+    let response = api_fetch("https://habitica.com/api/v3/content", GET_PARAMS);
+    let obj = parseJSON(response);
+    _cachedContent = obj.data;
+  }
+  return _cachedContent;
+}
+
+/**
  * api_getUser(forceFetch [optional])
  *
  * Returns the user data from the Habitica API.
@@ -224,4 +241,38 @@ function api_getUser(forceFetch = false) {
     _cachedUser = obj.data;
   }
   return _cachedUser;
+}
+
+/**
+ * api_getParty(forceFetch [optional])
+ *
+ * Returns the party data from the Habitica API.
+ * The party data is cached by default. Use forceFetch to force
+ * a new fetch from the Habitica API and received updated party data.
+ */
+let _cachedParty;
+function api_getParty(forceFetch = false) {
+  if (forceFetch || typeof _cachedParty === "undefined") {
+    let response = api_fetch("https://habitica.com/api/v3/groups/party", GET_PARAMS);
+    let obj = parseJSON(response);
+    _cachedParty = obj.data;
+  }
+  return _cachedParty;
+}
+
+/**
+ * api_getPartyMembers(forceFetch [optional])
+ *
+ * Returns the party member data from the Habitica API.
+ * The party member data is cached by default. Use forceFetch to force
+ * a new fetch from the Habitica API and received updated party member data.
+ */
+let _cachedPartyMembers;
+function api_getPartyMembers(forceFetch = false) {
+  if (forceFetch || typeof _cachedPartyMembers === "undefined") {
+    let response = api_fetch("https://habitica.com/api/v3/groups/party/members?includeAllPublicFields=true", GET_PARAMS);
+    let obj = parseJSON(response);
+    _cachedPartyMembers = obj.data;
+  }
+  return _cachedPartyMembers;
 }
