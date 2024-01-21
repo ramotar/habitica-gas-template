@@ -8,7 +8,7 @@ function doGet(event) {
   let webAppURL = ScriptApp.getService().getUrl();
   setWebAppURL(webAppURL);
 
-  let template = HtmlService.createTemplateFromFile('doGet');
+  let template = HtmlService.createTemplateFromFile('template/doGet');
   template.installTime = getInstallTime();
 
   let output = template.evaluate();
