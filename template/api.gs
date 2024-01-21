@@ -1,4 +1,11 @@
 /**
+ * Habitica: GAS Template v1.1 by @Turac
+ *
+ * See GitHub page for info & setup instructions:
+ * https://github.com/ramotar/habitica-gas-template
+ */
+
+/**
  * Define regular expression to test user ID and API tokens
  */
 const TOKEN_REGEXP = new RegExp("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
