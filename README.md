@@ -135,3 +135,7 @@ Users and authors alike can contribute to this template and a hassle-free script
 | :lady_beetle: | [Issues](https://github.com/ramotar/habitica-gas-template/issues) | If you detect an issue, feel free to raise it |
 | :grey_question: | [Questions](https://github.com/ramotar/habitica-gas-template/discussions/categories/q-a) | Any questions you have, are welcome |
 | :bulb: | [Suggestions](https://github.com/ramotar/habitica-gas-template/discussions/categories/suggestions) | I will be happy to discuss your suggestions |
+
+## Acknowledgement
+* This template wildly extends the capabilities of the [Streamlined Event-Driven (Webhook) Script Template](https://habitica.fandom.com/wiki/Streamlined_Event-Driven_(Webhook)_Script_Template)
+* Most of the code was inspired by [bumbleshoot](https://github.com/bumbleshoot)'s [Automate Habitica](https://github.com/bumbleshoot/automate-habitica), thank you for paving the way :heart:
