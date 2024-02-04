@@ -1,7 +1,9 @@
 # Google Apps Script template for Habitica
 The **GAS Template** is a broadly usable template to create scripts, that are to be used in connection with [Habitica](https://habitica.com/).
 
-It provides users with a simple interface to install, update and deinstall their script - without the need to provide the Web App URL manually or to keep track of the installation status. On the other hand, it provides various helper functions to script authors and takes care of the most common tasks around Habitica webhooks. This also ensures reliable and consistent execution among all scripts using this template, since utility functions aren't implemented again and again, but updated on all scripts as soon a issue arises. 
+It provides users with a simple interface to install, update and deinstall their script - without the need to provide the Web App URL manually or to keep track of the installation status.  
+On the other hand, it provides various helper functions to script authors and takes care of the most common tasks around Habitica webhooks.  
+This also ensures reliable and consistent execution among all scripts using this template, since utility functions aren't implemented again and again, but updated on all scripts as soon a issue arises. 
 
 ## Features
 **For users:**
@@ -23,10 +25,10 @@ The following installation instructions are valid for all scripts using the GAS 
 The first step is to get the source code of the script into your personal account:
 
 1. Go to the site of the script you want to install on [Google Apps Script](https://script.google.com/). The author will provide you with the corresponding link.
-2. If you're not already signed in to your Google Account, you will be asked to sign in.
-3. In the main menu on the left, click on "Overview" (looks like  :information_source:  in a circle).
-4. On the upper right hand side, click on "Make a copy" (looks like two sheets of paper).
-5. At the top of the following screen, remove "Copy of ..." from the name of your script.
+3. If you're not already signed in to your Google Account, you will be asked to sign in.
+4. In the main menu on the left, click on "Overview" (looks like  :information_source:  in a circle).
+5. On the upper right hand side, click on "Make a copy" (looks like two sheets of paper).
+6. At the top of the following screen, remove "Copy of ..." from the name of your script.
 
 ### Configuring the script
 Congratulations, you made is this far. Next we configure your script:
@@ -51,7 +53,8 @@ Your script now has all the necessary code and options to fulfill your wishes. N
 If your script status shows as "INSTALLED", you made it and your script is active :tada:
 
 ### Resolving errors in the configuration
-You made it to the last step, but your script doesn't switch to "INSTALLED"? Than maybe there was as mistake while editing the configuration, let's see:
+You made it to the last step, but your script doesn't switch to "INSTALLED"?  
+Than maybe there was as mistake while editing the configuration, let's see:
 
 1. Go back to your script code in Google Apps Script (the tab should still be open next to your script interface).
 2. In the main menu on the left, click on "Executions" (looks like three lines with a play button).
@@ -59,10 +62,12 @@ You made it to the last step, but your script doesn't switch to "INSTALLED"? Tha
 4. You are now provided with the event log of your most recent installation attempt. Check for any errors or warnings and resolve them.
 5. After resolving, follow the steps in [Updating options](#updating-options), but click "Install" in the last step.
 
-Assuming you resolved all mistakes, your script status should now be "INSTALLED". If not, repeat this step or ask for help as stated in [Unsolved errors](#unsolved-errors-questions-or-advice).
+Assuming you resolved all mistakes, your script status should now be "INSTALLED".  
+If not, repeat this step or ask for help as stated in [Unsolved errors](#unsolved-errors-questions-or-advice).
 
 ### Unsolved errors, questions or advice
-You can't finish your script installation, have questions regarding the behavior of the script or want some simple advice? Then there are multiple options:
+You can't finish your script installation, have questions regarding the behavior of the script or want some simple advice?  
+Then there are multiple options:
 
 * If the script has a corresponding [GitHub](https://github.com/) page, you can open an Issue or a Discussion on your topic.
 * Contact the [Aspiring Comrades](https://discord.com/channels/1136011016682098778/1137120990044897440) on the official Discord channel of Habitica.
