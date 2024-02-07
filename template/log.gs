@@ -8,7 +8,7 @@ const LOG_ERROR = 0;
 
 // [Authors] Define the current log level
 // - All messages of this level and below will be logged.
-const LOG_LEVEL = LOG_DEBUG;
+const LOG_LEVEL = LOG_INFO;
 
 // [Authors] No need to edit below this point,
 //   but feel free to have a look and tinker with it
