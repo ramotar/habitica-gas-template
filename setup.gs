@@ -1,3 +1,10 @@
+/**
+ * Example script v1.2.3 by John Doe
+ *
+ * See Wiki / GitHub page for info & setup instructions:
+ * https://link/to/wiki-or-github/page
+ */
+
 /* ========================================== */
 /* [Users] Required script data to fill in    */
 /* ========================================== */
