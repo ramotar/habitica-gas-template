@@ -155,7 +155,6 @@ function api_fetch(url, params, instant = false, maxAttempts = 3) {
   let cause = Object.assign(
     { "responseCode": response.getResponseCode() },
     parseJSON(response.getContentText()),
-    { "headers": response.getAllHeaders() }
   );
 
   // if request failed finally, throw exception
