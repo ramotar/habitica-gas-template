@@ -1,5 +1,5 @@
 /**
- * Habitica: GAS Template v1.2.1 by @Turac
+ * Habitica: GAS Template v1.2.2 by @Turac
  *
  * See GitHub page for info & setup instructions:
  * https://github.com/ramotar/habitica-gas-template
@@ -152,11 +152,16 @@ function api_fetch(url, params, instant = false, maxAttempts = 3) {
   }
 
   let domain = url.split("/", 3).join("/");
+  let cause = Object.assign(
+    { "responseCode": response.getResponseCode() },
+    parseJSON(response.getContentText()),
+    { "headers": response.getAllHeaders() }
+  );
 
   // if request failed finally, throw exception
   throw new Error(
     "Request failed for " + domain + " returned code " + response.getResponseCode() + ". Truncated server response: " + response.getContentText(),
-    { cause: response }
+    { cause: cause }
   );
 }
 
