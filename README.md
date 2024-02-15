@@ -1,9 +1,9 @@
 # Google Apps Script template for Habitica
 The **GAS Template** is a broadly usable template to create scripts, that are to be used in connection with [Habitica](https://habitica.com/).
 
-It provides users with a simple interface to install, update and deinstall their script - without the need to provide the Web App URL manually or to keep track of the installation status.  
-On the other hand, it provides various helper functions to script authors and takes care of the most common tasks around Habitica webhooks.  
-This also ensures reliable and consistent execution among all scripts using this template, since utility functions aren't implemented again and again, but updated on all scripts as soon a issue arises. 
+It provides users with a simple interface to install, update and deinstall their script - without the need to provide the Web App URL manually or to keep track of the installation status.
+On the other hand, it provides various helper functions to script authors and takes care of the most common tasks around Habitica webhooks.
+This also ensures reliable and consistent execution among all scripts using this template, since utility functions aren't implemented again and again, but updated on all scripts as soon a issue arises.
 
 ## Features
 **For users:**
@@ -16,7 +16,7 @@ This also ensures reliable and consistent execution among all scripts using this
 * ready-to-use functions for webhook and trigger processing
 * API functions handling caching, rate limiting and error detection
 * numerous utility functions for common actions
-* improved logging capabilities 
+* improved logging capabilities
 
 ## Installation
 The following installation instructions are valid for all scripts using the GAS Template
@@ -53,7 +53,7 @@ Your script now has all the necessary code and options to fulfill your wishes. N
 If your script status shows as "INSTALLED", you made it and your script is active :tada:
 
 ### Resolving errors in the configuration
-You made it to the last step, but your script doesn't switch to "INSTALLED"?  
+You made it to the last step, but your script doesn't switch to "INSTALLED"?
 Than maybe there was as mistake while editing the configuration, let's see:
 
 1. Go back to your script code in Google Apps Script (the tab should still be open next to your script interface).
@@ -62,11 +62,11 @@ Than maybe there was as mistake while editing the configuration, let's see:
 4. You are now provided with the event log of your most recent installation attempt. Check for any errors or warnings and resolve them.
 5. After resolving, follow the steps in [Updating options](#updating-options), but click "Install" in the last step.
 
-Assuming you resolved all mistakes, your script status should now be "INSTALLED".  
+Assuming you resolved all mistakes, your script status should now be "INSTALLED".
 If not, repeat this step or ask for help as stated in [Unsolved errors](#unsolved-errors-questions-or-advice).
 
 ### Unsolved errors, questions or advice
-You can't finish your script installation, have questions regarding the behavior of the script or want some simple advice?  
+You can't finish your script installation, have questions regarding the behavior of the script or want some simple advice?
 Then there are multiple options:
 
 * If the script has a corresponding [GitHub](https://github.com/) page, you can open an Issue or a Discussion on your topic.
@@ -124,7 +124,7 @@ To start authoring your own script based on the GAS Template, the rough steps ar
 * Implement all your functionality in `code.gs`
   * There is an example function `processTrigger()`, that may be used for regularly recurring tasks
   * Webhooks are handled by the `processWebhook()` functions - one for immediate reactions and one for heavy work, that is not time critical
- 
+
 For most applications, this should be more than enough to fulfill all your needs. But feel free to also look under the hood and modify the template, if something special is needed.
 
 ## Contributions
