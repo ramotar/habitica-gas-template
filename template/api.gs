@@ -103,6 +103,20 @@ let rateLimit = new RateLimit(null);
  */
 function api_fetch(url, params, instant = false, maxAttempts = 3) {
   var response;
+  let domain = url.split("/", 3).join("/");
+
+  if (!url.startsWith("https://habitica.com/api/v3")) {
+    let cause = {
+      "responseCode": 400,
+      "success": false,
+      "error": "BadRequest",
+      "message": "The URL " + url + " does not point to the Habitica API."
+    }
+    throw new Error(
+      "Request failed for " + domain + " returned code " + 400 + ".",
+      { cause: cause }
+    );
+  }
 
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
 
@@ -151,7 +165,6 @@ function api_fetch(url, params, instant = false, maxAttempts = 3) {
     }
   }
 
-  let domain = url.split("/", 3).join("/");
   let cause = Object.assign(
     { "responseCode": response.getResponseCode() },
     parseJSON(response.getContentText()),
