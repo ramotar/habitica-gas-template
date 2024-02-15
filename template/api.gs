@@ -165,55 +165,6 @@ function api_fetch(url, params, instant = false, maxAttempts = 3) {
 }
 
 /**
- * api_sendPM(message, recipient [optional])
- *
- * Sends a personal message to the given recipient.
- * If no recipient is given, sends a message to yourself.
- */
-function api_sendPM(message, recipient = INT_USER_ID) {
-  if (!TOKEN_REGEXP.test(recipient)) {
-    throw new Error(
-      "Invalid recipient ID \"" + recipient + "\", doesn't match pattern 12345678-90ab-416b-cdef-1234567890ab",
-      { cause: recipient }
-    )
-  }
-
-  let params = Object.assign({
-    "contentType": "application/json",
-    "payload": JSON.stringify({
-      "message": String(message),
-      "toUserId": String(recipient)
-    })
-  }, POST_PARAMS);
-
-  api_fetch("https://habitica.com/api/v3/members/send-private-message", params);
-}
-
-/**
- * api_createWebhook(webhookData)
- *
- * Creates a webhook with the given webhook data.
- * webhookData is an object with key/value pairs as defined by
- * https://habitica.com/apidoc/#api-Webhook
- *
- * The url is filled in automatically and
- * the label is always set to the name of the script.
- */
-function api_createWebhook(webhookData) {
-  Object.assign(webhookData, {
-    "url": getWebAppURL(),
-    "label": getScriptName()
-  })
-
-  let params = Object.assign({
-    "contentType": "application/json",
-    "payload": JSON.stringify(webhookData)
-  }, POST_PARAMS);
-
-  api_fetch("https://habitica.com/api/v3/user/webhook", params);
-}
-
-/**
  * api_getContent(forceFetch [optional])
  *
  * Returns the content data from the Habitica API.
@@ -279,4 +230,145 @@ function api_getPartyMembers(forceFetch = false) {
     _cachedPartyMembers = obj.data;
   }
   return _cachedPartyMembers;
+}
+
+/**
+ * api_inviteToQuest(questKey)
+ *
+ * Invite the party to a quest from your inventory.
+ * The quest is identified by its questKey.
+ */
+function api_inviteToQuest(questKey) {
+  api_fetch("https://habitica.com/api/v3/groups/party/quests/invite/" + questKey, POST_PARAMS);
+}
+
+/**
+ * api_cancelQuest()
+ *
+ * Cancel a pending quest invite.
+ */
+function api_cancelQuest() {
+  api_fetch("https://habitica.com/api/v3/groups/party/quests/cancel", POST_PARAMS);
+}
+
+/**
+ * api_acceptQuestInvite()
+ *
+ * Accept a pending quest invite.
+ */
+function api_acceptQuestInvite() {
+  api_fetch("https://habitica.com/api/v3/groups/party/quests/accept", POST_PARAMS);
+}
+
+/**
+ * api_forceStartQuest()
+ *
+ * Force-start a pending quest invite.
+ */
+function api_forceStartQuest() {
+  api_fetch("https://habitica.com/api/v3/groups/party/quests/force-start", POST_PARAMS);
+}
+
+/**
+ * api_sendPartyMessage(message)
+ *
+ * Sends a message to your party.
+ */
+function api_sendPartyMessage(message) {
+  let params = Object.assign({
+    "contentType": "application/json",
+    "payload": JSON.stringify({
+      "message": String(message)
+    })
+  }, POST_PARAMS);
+
+  api_fetch("https://habitica.com/api/v3/groups/party/chat", params);
+}
+
+/**
+ * api_sendPM(message, recipient [optional])
+ *
+ * Sends a personal message to the given recipient.
+ * If no recipient is given, sends a message to yourself.
+ */
+function api_sendPM(message, recipient = INT_USER_ID) {
+  if (!TOKEN_REGEXP.test(recipient)) {
+    throw new Error(
+      "Invalid recipient ID \"" + recipient + "\", doesn't match pattern 12345678-90ab-416b-cdef-1234567890ab",
+      { cause: recipient }
+    )
+  }
+
+  let params = Object.assign({
+    "contentType": "application/json",
+    "payload": JSON.stringify({
+      "message": String(message),
+      "toUserId": String(recipient)
+    })
+  }, POST_PARAMS);
+
+  api_fetch("https://habitica.com/api/v3/members/send-private-message", params);
+}
+
+/**
+ * api_createUserTask()
+ *
+ * Create a task belonging to the user.
+ * task is an object with key/value pairs as defined by
+ * https://habitica.com/apidoc/#api-Task-CreateUserTasks
+ */
+function api_createUserTask(task) {
+  let params = Object.assign({
+    "contentType": "application/json",
+    "payload": JSON.stringify(task)
+  }, POST_PARAMS);
+
+  api_fetch("https://habitica.com/api/v3/tasks/user", params);
+}
+
+/**
+ * api_getWebhooks()
+ *
+ * Returns all webhooks for the user.
+ */
+function api_createWebhook() {
+  let response = api_fetch("https://habitica.com/api/v3/user/webhook", GET_PARAMS);
+  let object = parseJSON(response);
+  let webhooks = object.data;
+
+  return webhooks;
+}
+
+/**
+ * api_createWebhook(webhookData)
+ *
+ * Creates a webhook with the given webhook data.
+ * webhookData is an object with key/value pairs as defined by
+ * https://habitica.com/apidoc/#api-Webhook
+ *
+ * The url is filled in automatically and
+ * the label is always set to the name of the script.
+ */
+function api_createWebhook(webhookData) {
+  Object.assign(webhookData, {
+    "url": getWebAppURL(),
+    "label": getScriptName()
+  })
+
+  let params = Object.assign({
+    "contentType": "application/json",
+    "payload": JSON.stringify(webhookData)
+  }, POST_PARAMS);
+
+  api_fetch("https://habitica.com/api/v3/user/webhook", params);
+}
+
+/**
+ * api_deleteWebhook(webhookId)
+ *
+ * Deletes a webhook.
+ * The webhook is identified by its webhookId.
+ */
+function api_deleteWebhook(webhookId) {
+  api_fetch("https://habitica.com/api/v3/user/webhook/" + webhookId, DELETE_PARAMS);
 }
