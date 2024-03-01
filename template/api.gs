@@ -344,7 +344,7 @@ function api_createUserTask(task) {
  *
  * Returns all webhooks for the user.
  */
-function api_createWebhook() {
+function api_getWebhooks() {
   let response = api_fetch("https://habitica.com/api/v3/user/webhook", GET_PARAMS);
   let object = parseJSON(response);
   let webhooks = object.data;

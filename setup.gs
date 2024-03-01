@@ -145,19 +145,17 @@ function deleteTriggers() {
 function deleteWebhooks() {
   // [Authors] This function deletes all existing webhooks to your script
 
-  let response = api_fetch("https://habitica.com/api/v3/user/webhook", GET_PARAMS);
-  let obj = parseJSON(response);
-  let webhooks = obj.data;
+  let webhooks = api_getWebhooks();
 
   if (webhooks.length > 0) {
 
-    console.log("Deleting webhooks");
+    logInfo("Deleting webhooks");
 
     let webAppURL = getWebAppURL();
 
     for (let webhook of webhooks) {
       if (webhook.url == webAppURL) {
-        api_fetch("https://habitica.com/api/v3/user/webhook/" + webhook.id, DELETE_PARAMS);
+        api_deleteWebhook(webhook.id);
       }
     }
   }
