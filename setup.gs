@@ -184,7 +184,7 @@ function validateOptions() {
   }
 
   if (!valid) {
-    logInfo("Please fix the above errors, create a new version of the deployment, and run the doOneTimeSetup() function again.\nIf you aren't sure how to do this, see \"Changing the Settings\" in the documentation for this script.");
+    logInfo("Please fix the above errors, create a new version of the deployment, and click \"Install\" again.\nIf you aren't sure how to do this, see \"Updating options\" in the documentation for this script.");
   }
 
   return valid;
