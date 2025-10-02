@@ -1,5 +1,5 @@
 /**
- * Habitica: GAS Template v1.3.2 by @Turac
+ * Habitica: GAS Template v1.3.3 by @Turac
  *
  * See Wiki page for info & setup instructions:
  * https://habitica.fandom.com/wiki/Habitica_GAS_Template
