@@ -120,20 +120,41 @@ function doPostTriggered(event) {
  * notifyUserOfError(error)
  *
  * Notifies the user via mail of the provided error.
+ * Attaches additional information as a log file, if it is to big for the mail body.
  */
 function notifyUserOfError(error) {
   let body = "Your script, " + getScriptName() + ", has recently failed to finish successfully. The error stack is shown below.\n\n";
   body += error.stack;
-  if (error.hasOwnProperty("cause")) {
-    body += "\n\ncaused by:\n\n" + JSON.stringify(error.cause);
-  }
-  body += "\n\n" + Logger.getLog();
 
-  MailApp.sendEmail(
-    Session.getEffectiveUser().getEmail(),
-    getScriptName() + " failed!",
-    body
-  );
+  let message = {
+    to: Session.getEffectiveUser().getEmail(),
+    subject: getScriptName() + " failed!",
+    body: body,
+  }
+
+  let extendedBody = "";
+  if (error.hasOwnProperty("cause")) {
+    extendedBody += "caused by:\n\n" + JSON.stringify(error.cause) + "\n\n";
+  }
+  extendedBody += Logger.getLog();
+
+  if (extendedBody == "") {
+    // do nothing
+  }
+  // Check for the 100 KB body limit of Google Apps Script
+  else if (Utilities.newBlob(body + "\n\n" + extendedBody).getBytes().length > 100 * 1000) {
+    let timestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HHmmss");
+    let extendedFilename = getScriptName().replace(/[/\\?%*:|"<>]/g, "") + " " + timestamp + ".log";
+    let extendedBlob = Utilities.newBlob(extendedBody, 'text/plain', extendedFilename);
+
+    message["body"] += "\n\nAdditional information has been attached as '" + extendedFilename + "'.";
+    message["attachments"] = [extendedBlob];
+  }
+  else {
+    message["body"] += "\n\n" + extendedBody;
+  }
+
+  MailApp.sendEmail(message);
 }
 
 /**
