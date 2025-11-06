@@ -123,8 +123,7 @@ function doPostTriggered(event) {
  * Attaches additional information as a log file, if it is to big for the mail body.
  */
 function notifyUserOfError(error) {
-  let body = "Your script, " + getScriptName() + ", has recently failed to finish successfully. The error stack is shown below.\n\n";
-  body += error.stack;
+  let body = "Your script, " + getScriptName() + ", has recently failed to finish successfully.";
 
   let message = {
     to: Session.getEffectiveUser().getEmail(),
@@ -132,11 +131,12 @@ function notifyUserOfError(error) {
     body: body,
   }
 
-  let extendedBody = "";
+  let extendedBody = error.stack;
   if (error.hasOwnProperty("cause")) {
-    extendedBody += "caused by:\n\n" + JSON.stringify(error.cause) + "\n\n";
+    extendedBody += "\n\ncaused by:\n\n" + JSON.stringify(error.cause);
   }
-  extendedBody += Logger.getLog();
+  let log = Logger.getLog();
+  extendedBody += (log == "" ? "" : "\n\n" + log);
 
   if (extendedBody == "") {
     // do nothing
