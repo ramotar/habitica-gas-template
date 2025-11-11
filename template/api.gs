@@ -53,6 +53,9 @@ class Constants {
   static get POST_PARAMS() {
     return Object.assign({ "method": "post" }, this.PARAMS);
   }
+  static get PUT_PARAMS() {
+    return Object.assign({ "method": "put" }, this.PARAMS);
+  }
   static get DELETE_PARAMS() {
     return Object.assign({ "method": "delete" }, this.PARAMS);
   }
