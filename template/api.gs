@@ -237,6 +237,22 @@ function api_getUser(forceFetch = false) {
 }
 
 /**
+ * api_updateUser(userData)
+ *
+ * Updates the user data on the Habitica API.
+ * userData is an object with key/value pairs as defined by
+ * https://habitica.com/apidoc/#api-User-UpdateUser
+ */
+function api_updateUser(userData) {
+  let params = Object.assign({
+    "contentType": "application/json",
+    "payload": JSON.stringify(userData)
+  }, Constants.PUT_PARAMS);
+
+  api_fetch("https://habitica.com/api/v3/user", params);
+}
+
+/**
  * api_getParty(forceFetch [optional])
  *
  * Returns the party data from the Habitica API.
