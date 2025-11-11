@@ -11,30 +11,52 @@
 const TOKEN_REGEXP = new RegExp("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 
 /**
- * Define internal constants for USER_ID and API_TOKEN as well as AUTHOR_ID and SCRIPT_NAME
+ * class Constants
  *
- * Those are used for development purposes to prevent leakage of developer secrets.
+ * This class defines constants used throughout the script.
  */
-const INT_USER_ID = (typeof DEVELOPER_ID === "undefined" ? USER_ID : DEVELOPER_ID);
-const INT_API_TOKEN = (typeof DEVELOPER_API_TOKEN === "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN);
-const INT_AUTHOR_ID = (typeof DEVELOPER_ID === "undefined" ? AUTHOR_ID : DEVELOPER_ID);
-const INT_SCRIPT_NAME = (typeof DEVELOPER_SCRIPT_NAME === "undefined" ? SCRIPT_NAME : DEVELOPER_SCRIPT_NAME);
+class Constants {
+  /**
+   * Define internal constants for USER_ID and API_TOKEN as well as AUTHOR_ID and SCRIPT_NAME
+   *
+   * Those are used for development purposes to prevent leakage of developer secrets.
+   */
+  static get USER_ID() {
+    return (typeof DEVELOPER_ID === "undefined" ? USER_ID : DEVELOPER_ID);
+  }
+  static get API_TOKEN() {
+    return (typeof DEVELOPER_API_TOKEN === "undefined" ? API_TOKEN : DEVELOPER_API_TOKEN);
+  }
+  static get AUTHOR_ID() {
+    return (typeof DEVELOPER_ID === "undefined" ? AUTHOR_ID : DEVELOPER_ID);
+  }
+  static get SCRIPT_NAME() {
+    return (typeof DEVELOPER_SCRIPT_NAME === "undefined" ? SCRIPT_NAME : DEVELOPER_SCRIPT_NAME);
+  }
 
-/**
- * Define the headers for API calls
- */
-const HEADERS = {
-  "x-client": INT_AUTHOR_ID + "-" + INT_SCRIPT_NAME,
-  "x-api-user": INT_USER_ID,
-  "x-api-key": INT_API_TOKEN,
+  /**
+   * Define the headers for API calls
+   */
+  static get PARAMS() {
+    return {
+      "headers": {
+        "x-client": this.AUTHOR_ID + "-" + this.SCRIPT_NAME,
+        "x-api-user": this.USER_ID,
+        "x-api-key": this.API_TOKEN,
+      },
+      "muteHttpExceptions": true,
+    };
+  }
+  static get GET_PARAMS() {
+    return Object.assign({ "method": "get" }, this.PARAMS);
+  }
+  static get POST_PARAMS() {
+    return Object.assign({ "method": "post" }, this.PARAMS);
+  }
+  static get DELETE_PARAMS() {
+    return Object.assign({ "method": "delete" }, this.PARAMS);
+  }
 }
-const PARAMS = {
-  "headers": HEADERS,
-  "muteHttpExceptions": true
-}
-const GET_PARAMS = Object.assign({ "method": "get" }, PARAMS);
-const POST_PARAMS = Object.assign({ "method": "post" }, PARAMS);
-const DELETE_PARAMS = Object.assign({ "method": "delete" }, PARAMS);
 
 /**
  * class RateLimit
@@ -187,7 +209,7 @@ function api_fetch(url, params, instant = false, maxAttempts = 3) {
 let _cachedContent;
 function api_getContent(forceFetch = false) {
   if (forceFetch || typeof _cachedContent === "undefined") {
-    let response = api_fetch("https://habitica.com/api/v3/content", GET_PARAMS);
+    let response = api_fetch("https://habitica.com/api/v3/content", Constants.GET_PARAMS);
     let obj = parseJSON(response);
     _cachedContent = obj.data;
   }
@@ -204,7 +226,7 @@ function api_getContent(forceFetch = false) {
 let _cachedUser;
 function api_getUser(forceFetch = false) {
   if (forceFetch || typeof _cachedUser === "undefined") {
-    let response = api_fetch("https://habitica.com/api/v3/user", GET_PARAMS);
+    let response = api_fetch("https://habitica.com/api/v3/user", Constants.GET_PARAMS);
     let obj = parseJSON(response);
     _cachedUser = obj.data;
   }
@@ -221,7 +243,7 @@ function api_getUser(forceFetch = false) {
 let _cachedParty;
 function api_getParty(forceFetch = false) {
   if (forceFetch || typeof _cachedParty === "undefined") {
-    let response = api_fetch("https://habitica.com/api/v3/groups/party", GET_PARAMS);
+    let response = api_fetch("https://habitica.com/api/v3/groups/party", Constants.GET_PARAMS);
     let obj = parseJSON(response);
     _cachedParty = obj.data;
   }
@@ -238,7 +260,7 @@ function api_getParty(forceFetch = false) {
 let _cachedPartyMembers;
 function api_getPartyMembers(forceFetch = false) {
   if (forceFetch || typeof _cachedPartyMembers === "undefined") {
-    let response = api_fetch("https://habitica.com/api/v3/groups/party/members?includeAllPublicFields=true", GET_PARAMS);
+    let response = api_fetch("https://habitica.com/api/v3/groups/party/members?includeAllPublicFields=true", Constants.GET_PARAMS);
     let obj = parseJSON(response);
     _cachedPartyMembers = obj.data;
   }
@@ -252,7 +274,7 @@ function api_getPartyMembers(forceFetch = false) {
  * The quest is identified by its questKey.
  */
 function api_inviteToQuest(questKey) {
-  api_fetch("https://habitica.com/api/v3/groups/party/quests/invite/" + questKey, POST_PARAMS);
+  api_fetch("https://habitica.com/api/v3/groups/party/quests/invite/" + questKey, Constants.POST_PARAMS);
 }
 
 /**
@@ -261,7 +283,7 @@ function api_inviteToQuest(questKey) {
  * Cancel a pending quest invite.
  */
 function api_cancelQuest() {
-  api_fetch("https://habitica.com/api/v3/groups/party/quests/cancel", POST_PARAMS);
+  api_fetch("https://habitica.com/api/v3/groups/party/quests/cancel", Constants.POST_PARAMS);
 }
 
 /**
@@ -270,7 +292,7 @@ function api_cancelQuest() {
  * Accept a pending quest invite.
  */
 function api_acceptQuestInvite() {
-  api_fetch("https://habitica.com/api/v3/groups/party/quests/accept", POST_PARAMS);
+  api_fetch("https://habitica.com/api/v3/groups/party/quests/accept", Constants.POST_PARAMS);
 }
 
 /**
@@ -279,7 +301,7 @@ function api_acceptQuestInvite() {
  * Force-start a pending quest invite.
  */
 function api_forceStartQuest() {
-  api_fetch("https://habitica.com/api/v3/groups/party/quests/force-start", POST_PARAMS);
+  api_fetch("https://habitica.com/api/v3/groups/party/quests/force-start", Constants.POST_PARAMS);
 }
 
 /**
@@ -293,7 +315,7 @@ function api_sendPartyMessage(message) {
     "payload": JSON.stringify({
       "message": String(message)
     })
-  }, POST_PARAMS);
+  }, Constants.POST_PARAMS);
 
   api_fetch("https://habitica.com/api/v3/groups/party/chat", params);
 }
@@ -304,7 +326,7 @@ function api_sendPartyMessage(message) {
  * Sends a personal message to the given recipient.
  * If no recipient is given, sends a message to yourself.
  */
-function api_sendPM(message, recipient = INT_USER_ID) {
+function api_sendPM(message, recipient = Constants.USER_ID) {
   if (!TOKEN_REGEXP.test(recipient)) {
     throw new Error(
       "Invalid recipient ID \"" + recipient + "\", doesn't match pattern 12345678-90ab-416b-cdef-1234567890ab",
@@ -318,7 +340,7 @@ function api_sendPM(message, recipient = INT_USER_ID) {
       "message": String(message),
       "toUserId": String(recipient)
     })
-  }, POST_PARAMS);
+  }, Constants.POST_PARAMS);
 
   api_fetch("https://habitica.com/api/v3/members/send-private-message", params);
 }
@@ -334,7 +356,7 @@ function api_createUserTask(task) {
   let params = Object.assign({
     "contentType": "application/json",
     "payload": JSON.stringify(task)
-  }, POST_PARAMS);
+  }, Constants.POST_PARAMS);
 
   api_fetch("https://habitica.com/api/v3/tasks/user", params);
 }
@@ -345,7 +367,7 @@ function api_createUserTask(task) {
  * Returns all webhooks for the user.
  */
 function api_getWebhooks() {
-  let response = api_fetch("https://habitica.com/api/v3/user/webhook", GET_PARAMS);
+  let response = api_fetch("https://habitica.com/api/v3/user/webhook", Constants.GET_PARAMS);
   let object = parseJSON(response);
   let webhooks = object.data;
 
@@ -371,7 +393,7 @@ function api_createWebhook(webhookData) {
   let params = Object.assign({
     "contentType": "application/json",
     "payload": JSON.stringify(webhookData)
-  }, POST_PARAMS);
+  }, Constants.POST_PARAMS);
 
   api_fetch("https://habitica.com/api/v3/user/webhook", params);
 }
@@ -383,5 +405,5 @@ function api_createWebhook(webhookData) {
  * The webhook is identified by its webhookId.
  */
 function api_deleteWebhook(webhookId) {
-  api_fetch("https://habitica.com/api/v3/user/webhook/" + webhookId, DELETE_PARAMS);
+  api_fetch("https://habitica.com/api/v3/user/webhook/" + webhookId, Constants.DELETE_PARAMS);
 }

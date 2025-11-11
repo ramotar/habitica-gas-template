@@ -168,12 +168,12 @@ function validateOptions() {
 
   let valid = true;
 
-  if (typeof INT_USER_ID !== "string" || !TOKEN_REGEXP.test(INT_USER_ID)) {
+  if (typeof Constants.USER_ID !== "string" || !TOKEN_REGEXP.test(Constants.USER_ID)) {
     logError("USER_ID must equal your Habitica User ID.\n\ne.g. const USER_ID = \"12345678-90ab-416b-cdef-1234567890ab\";\n\nYour Habitica User ID can be found at https://habitica.com/user/settings/api");
     valid = false;
   }
 
-  if (typeof INT_API_TOKEN !== "string" || !TOKEN_REGEXP.test(INT_API_TOKEN)) {
+  if (typeof Constants.API_TOKEN !== "string" || !TOKEN_REGEXP.test(Constants.API_TOKEN)) {
     logError("API_TOKEN must equal your Habitica API Token.\n\ne.g. const API_TOKEN = \"2345678-90ab-416b-cdef-1234567890ab\";\n\nYour Habitica API Token can be found at https://habitica.com/user/settings/api");
     valid = false;
   }
